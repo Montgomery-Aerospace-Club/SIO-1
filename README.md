@@ -8,6 +8,6 @@
 
 3. Use the config:  
 
-![[configs]]
+![[configs.png]]
 
 4. cope i will finish this later
