@@ -8,6 +8,6 @@
 
 3. Use the config:  
 
-![[configs.png]]
+![alt text](https://github.com/Montgomery-Aerospace-Club/SIO-1/blob/main/configs.png?raw=true)
 
 4. cope i will finish this later
