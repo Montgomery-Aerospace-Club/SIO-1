@@ -18,7 +18,7 @@ xSI01 SI01;
 
 static unsigned long lastPrint = 0;
 // ms, (m/s^2), (rad/s), idk what units is gforce in idk what is gforce im just forced to do this 💀
-String header = "time(ms),gyrox,gyroy,gyroz,ax,ay,ax,mx,my,mz,roll,pitch,gforce";
+String header = "time(ms),gyrox,gyroy,gyroz,ax,ay,ax,mx,my,mz,roll,pitch,gforce\n";
 
 void setup() {
   Serial.begin(115200);
