@@ -10,14 +10,14 @@ xSI01 SI01;
 
 #define I2C_SDA 26
 #define I2C_SCL 27
-#define PRINT_SPEED 250
+#define PRINT_SPEED 250 // ms?
 #define SPI_MISO 12
 #define SPI_MOSI 13
 #define SPI_SCK 14
 #define SD_CS 5
 
 static unsigned long lastPrint = 0;
-// ms, (m/s^2), (rad/s), idk what units is gforce in idk what is gforce im just forced to do this :skull:
+// ms, (m/s^2), (rad/s), idk what units is gforce in idk what is gforce im just forced to do this 💀
 String header = "time(ms),ax,ay,ax,mx,my,mz,roll,pitch,gforce";
 
 void setup() {
@@ -57,91 +57,64 @@ void setup() {
   writeFile(SD, "/data.txt", header.c_str());
   
   while (true){
-      // Read and calculate data from SL01 sensor
     SI01.poll();
-    String dataa = "";
-
+  
     if ( (lastPrint + PRINT_SPEED) < millis()) {
-      printGyro();  // Print "G: gx, gy, gz"
-      printAccel(); // Print "A: ax, ay, az"
-      printMag();   // Print "M: mx, my, mz"
-      printAttitude(); // Print Roll, Pitch and G-Force
-      Serial.println();
       lastPrint = millis(); // Update lastPrint time
+      float gyrox = SI01.getGX();
+      float gyroy = SI01.getGY();
+      float gyroz = SI01.getGZ();
+      float ax = SI01.getAX();
+      float ay = SI01.getAY();
+      float az = SI01.getAZ();
+      float mx = SI01.getMX();
+      float my = SI01.getMY();
+      float mz = SI01.getMZ();
+      float roll = SI01.getRoll();
+      float pitch = SI01.getPitch();
+      float gforce = SI01.getGForce()
+      SDcardSTUFF(lastPrint, gyrox, gyroy, gyroz, float ax, float ay, float az, float mx, float my, float mz, float roll, float pitch, float gforce)
     }
   }
 }
 
 void loop() {
-  
-  /*
-      dataa += String(time);
-    dataa.concat(",");
-    dataa += String(eCO2);
-    dataa.concat(",");
-    dataa += String(TVOC);
-    dataa.concat(",");
-    dataa += String(tempC);
-    dataa.concat(",");
-    dataa += String(humidity);
-    dataa.concat(",");
-    dataa += String(tempC);
-    dataa.concat(",");
-    dataa += String(press);
-    dataa.concat(",");
-    dataa += String(pm1);
-    dataa.concat(",");
-    dataa += String(pm25);
-    dataa.concat(",");
-    dataa += String(pm10);
-    dataa += "\n";
-    
-    if (pm1 != 69 && pm25 != 69 && pm10 != 69){
-      // Serial.print(header);
-      // Serial.println(dataa);
-      appendFile(SD, "/data.txt", dataa.c_str());
-    }
-    
-  */
-}
-
-void printGyro(void) {
-  Serial.print("G: ");
-  Serial.print(SI01.getGX(), 2);
-  Serial.print(", ");
-  Serial.print(SI01.getGY(), 2);
-  Serial.print(", ");
-  Serial.println(SI01.getGZ(), 2);
 
 }
 
-void printAccel(void) {
-  Serial.print("A: ");
-  Serial.print(SI01.getAX(), 2);
-  Serial.print(", ");
-  Serial.print(SI01.getAY(), 2);
-  Serial.print(", ");
-  Serial.println(SI01.getAZ(), 2);
+void SDcardSTUFF( uint32_t long time, float gyrox, float gyroy, float gyroz, float ax, float ay, float az, float mx, float my, float mz, float roll, float pitch, float gforce){
+  String data = "";
+  dataa += String(time);
+  dataa.concat(",");
+  dataa += String(gyrox, 3);
+  dataa.concat(",");
+  dataa += String(gyroy, 3);
+  dataa.concat(",");
+  dataa += String(gyroz, 3);
+  dataa.concat(",");
+  dataa += String(ax, 3);
+  dataa.concat(",");
+  dataa += String(ay, 3);
+  dataa.concat(",");
+  dataa += String(az, 3);
+  dataa.concat(",");
+  dataa += String(mx, 3);
+  dataa.concat(",");
+  dataa += String(my, 3);
+  dataa.concat(",");
+  dataa += String(mz, 3);
+  dataa.concat(",");
+  dataa += String(roll,2);
+  dataa.concat(",");
+  dataa += String(pitch, 2);
+  dataa.concat(",");
+  dataa += String(gforce,2);
+  dataa.concat(",");
+  dataa += "\n";
+  Serial.print(dataa);
+  appendFile(SD, "/data.txt", dataa.c_str());
 }
 
-void printMag(void) {
-  Serial.print("M: ");
-  Serial.print(SI01.getMX(), 2);
-  Serial.print(", ");
-  Serial.print(SI01.getMY(), 2);
-  Serial.print(", ");
-  Serial.println(SI01.getMZ(), 2);
-
-}
-
-void printAttitude(void) {
-  Serial.print("Roll: ");
-  Serial.println(SI01.getRoll(), 2);
-  Serial.print("Pitch :");
-  Serial.println(SI01.getPitch(), 2);
-  Serial.print("GForce :");
-  Serial.println(SI01.getGForce(), 2);
-}
 //SD CARD
 void writeFile(fs::FS &fs, const char * path, const char * message) {
 
