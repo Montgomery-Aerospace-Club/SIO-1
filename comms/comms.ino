@@ -10,7 +10,7 @@ xSI01 SI01;
 
 #define I2C_SDA 26
 #define I2C_SCL 27
-#define PRINT_SPEED 250 // ms?
+#define PRINT_SPEED 0 // ms?
 #define SPI_MISO 12
 #define SPI_MOSI 13
 #define SPI_SCK 14
@@ -18,7 +18,7 @@ xSI01 SI01;
 
 static unsigned long lastPrint = 0;
 // ms, (m/s^2), (rad/s), idk what units is gforce in idk what is gforce im just forced to do this 💀
-String header = "time(ms),ax,ay,ax,mx,my,mz,roll,pitch,gforce";
+String header = "time(ms),gyrox,gyroy,gyroz,ax,ay,ax,mx,my,mz,roll,pitch,gforce";
 
 void setup() {
   Serial.begin(115200);
@@ -72,8 +72,8 @@ void setup() {
       float mz = SI01.getMZ();
       float roll = SI01.getRoll();
       float pitch = SI01.getPitch();
-      float gforce = SI01.getGForce()
-      SDcardSTUFF(lastPrint, gyrox, gyroy, gyroz, float ax, float ay, float az, float mx, float my, float mz, float roll, float pitch, float gforce)
+      float gforce = SI01.getGForce();
+      SDcardSTUFF(lastPrint, gyrox, gyroy, gyroz,ax,  ay,  az, mx,  my,  mz,  roll, pitch, gforce);
     }
   }
 }
@@ -83,7 +83,7 @@ void loop() {
 }
 
 void SDcardSTUFF( uint32_t long time, float gyrox, float gyroy, float gyroz, float ax, float ay, float az, float mx, float my, float mz, float roll, float pitch, float gforce){
-  String data = "";
+  String dataa = "";
   dataa += String(time);
   dataa.concat(",");
   dataa += String(gyrox, 3);
@@ -111,7 +111,8 @@ void SDcardSTUFF( uint32_t long time, float gyrox, float gyroy, float gyroz, flo
   dataa += String(gforce,2);
   dataa.concat(",");
   dataa += "\n";
-  Serial.print(dataa);
+  //Serial.println(header);
+  //Serial.print(dataa);
   appendFile(SD, "/data.txt", dataa.c_str());
 }
 
